@@ -1,30 +1,32 @@
-# PR Instructions (Configs + UI)
-This folder contains the updated files needed to fix your build and ship the CLV app.
+# PR: Remove banner + production build fixes
+This overlay removes the banner component and keeps a clean, Vercel-ready Next.js 14 build.
 
-## What to **add/replace**
-Copy these files to your repo root (overwrite if they exist):
-- `next.config.mjs`
-- `postcss.config.js`
-- `package.json`
-- `tailwind.config.ts`
-- `tsconfig.json`
-- `.env.example`
-- `.gitignore`
-- `app/**` (layout, page, API route, styles)
-- `components/**` (BannerBar, ScoreTicker, CLVCalculator)
-- `lib/**` (banners, odds)
-- `public/**` (banner placeholders, favicon)
+## Replace / Add
+- `next.config.mjs`, `postcss.config.js`
+- `app/` (includes `layout.tsx` importing `./globals.css` and **no** banner import)
+- `components/ScoreTicker.tsx`, `components/CLVCalculator.tsx`
+- `lib/odds.ts`
+- `tailwind.config.ts`, `tsconfig.json` (with `baseUrl`), `.env.example`, `.gitignore`
 
-## What to **delete** (if present)
-- `next.config.ts`
-- `postcss.config.ts`
+## Remove in your repo (if present)
+- `components/BannerBar.tsx`
+- `lib/banners.ts`
+- `public/banners/*`
 
-## Create a PR
+## Local build test
 ```bash
-git checkout -b clv-config-fixes
-# copy these files into your repo, then:
-git add -A
-git commit -m "fix: Next/PostCSS configs + CLV UI, banners, and ESPN ticker"
-git push -u origin clv-config-fixes
+npm ci
+cp .env.example .env.local
+npm run build
+npm start  # then open http://localhost:3000
 ```
-Then open a Pull Request on GitHub from `clv-config-fixes` → `main`.
+
+## Create PR
+```bash
+git checkout -b clv-no-banner-prod
+# copy overlay files into repo root (overwrite), delete banner files
+git add -A
+git commit -m "chore: remove banner; optimize prod build; ensure Tailwind loads"
+git push -u origin clv-no-banner-prod
+```
+Open a PR from `clv-no-banner-prod` → `main`.
