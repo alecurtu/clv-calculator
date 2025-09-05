@@ -52,19 +52,19 @@ export default function CLVCalculator() {
           </div></div></div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
-          <Stat label="Half-Points Moved" value={results.hpMoved.toFixed(1)} />
-          <Stat label="Direction (model)" value={results.direction > 0 ? '+ toward plus' : '- toward minus'} />
-          <Stat label="Equivalent Closing Odds @ Original Line (raw)" value={formatOdds(Math.round(results.equivRaw))} helper="Model shift from closing odds" />
-          <Stat label="Equivalent Closing Odds (converted)" value={formatOdds(Math.round(results.equivConverted))} helper="Implied-prob normalized (e.g., -82 → +122)" />
-          <Stat label="Equivalent Closing Odds (market-rounded)" value={formatOdds(Math.round(results.equivMarket))} helper={roundMode==='exact' ? 'No rounding' : `Rounded to ${roundMode==='tick5' ? '5' : '10'}¢ tick`} />
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Half-Points Moved</div><div className="text-xl font-semibold tracking-tight">{results.hpMoved.toFixed(1)}</div></div>
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Direction (model)</div><div className="text-xl font-semibold tracking-tight">{results.direction > 0 ? '+ toward plus' : '- toward minus'}</div></div>
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Equivalent Closing Odds @ Original Line (raw)</div><div className="text-xl font-semibold tracking-tight">{formatOdds(Math.round(results.equivRaw))}</div></div>
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Equivalent Closing Odds (converted)</div><div className="text-xl font-semibold tracking-tight">{formatOdds(Math.round(results.equivConverted))}</div></div>
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Equivalent Closing Odds (market-rounded)</div><div className="text-xl font-semibold tracking-tight">{formatOdds(Math.round(results.equivMarket))}</div></div>
         </div>
         <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
-          <Stat label="Implied Prob — Your Bet" value={`${(results.pOrig * 100).toFixed(2)}%`} />
-          <Stat label="Implied Prob — Equivalent @ Orig Line" value={`${(results.pEquiv * 100).toFixed(2)}%`} />
-          <Stat label="Edge (Probability Points)" value={`${(results.edgeProb * 100).toFixed(2)}%`} />
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Implied Prob — Your Bet</div><div className="text-xl font-semibold tracking-tight">{(results.pOrig * 100).toFixed(2)}%</div></div>
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Implied Prob — Equivalent @ Orig Line</div><div className="text-xl font-semibold tracking-tight">{(results.pEquiv * 100).toFixed(2)}%</div></div>
+          <div className="text-sm text-slate-600"><ul className="list-disc ml-5 mt-1"><li>Adjust cents/half-point for key totals.</li><li>Use market rounding to mimic prints.</li></ul></div>
         </div>
         <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
-          <Stat label="Edge (Cents vs Close)" value={`${results.edgeCentsModel > 0 ? '+' : ''}${results.edgeCentsModel.toFixed(1)}¢`} />
+          <div className="flex flex-col gap-1"><div className="text-sm text-slate-500">Edge (Cents vs Close)</div><div className="text-xl font-semibold tracking-tight">{`${results.edgeCentsModel > 0 ? '+' : ''}${results.edgeCentsModel.toFixed(1)}¢`}</div></div>
           <div className="text-sm text-slate-600"><ul className="list-disc ml-5 mt-1"><li>Adjust cents/half-point for key totals.</li><li>Use market rounding to mimic prints.</li></ul></div>
         </div></div>
       <div className="mt-4 flex flex-wrap gap-2">
