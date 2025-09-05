@@ -112,4 +112,196 @@ export default function CLVCalculator() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 rounded-2xl border p-6 bg-white/80 dark:bg-white/5">
         {/* Side */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="side" className="text-sm text-slate-600 dark:text-slate-300">Side</la
+          <label htmlFor="side" className="text-sm text-slate-600 dark:text-slate-300">Side</label>
+          <select
+            id="side"
+            value={side}
+            onChange={(e) => setSide(e.target.value as 'Over' | 'Under')}
+            className="h-10 rounded-md border px-3 bg-white/70 dark:bg-white/5"
+          >
+            <option value="Under">Under</option>
+            <option value="Over">Over</option>
+          </select>
+        </div>
+
+        {/* Original Line (0.5 steps) */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="origLine" className="text-sm text-slate-600 dark:text-slate-300">Original Line (total)</label>
+          <input
+            id="origLine"
+            type="number"
+            step={0.5}
+            inputMode="decimal"
+            value={originalLine}
+            onChange={(e) => setOriginalLine(parseFloat(e.target.value))}
+            className="h-10 rounded-md border px-3 bg-white/70 dark:bg-white/5"
+          />
+        </div>
+
+        {/* Original Odds (+/- allowed) */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="origOdds" className="text-sm text-slate-600 dark:text-slate-300">Original Odds (American)</label>
+          <input
+            id="origOdds"
+            type="text"
+            inputMode="text"               // full keyboard so + / - are available
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            placeholder="+120 or -110 (EV for +100)"
+            value={originalOddsText}
+            onChange={(e) => setOriginalOddsText(e.target.value)}
+            className="h-10 rounded-md border px-3 bg-white/70 dark:bg-white/5"
+          />
+        </div>
+
+        {/* Closing Line (0.5 steps) */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="closeLine" className="text-sm text-slate-600 dark:text-slate-300">Closing Line (total)</label>
+          <input
+            id="closeLine"
+            type="number"
+            step={0.5}
+            inputMode="decimal"
+            value={closingLine}
+            onChange={(e) => setClosingLine(parseFloat(e.target.value))}
+            className="h-10 rounded-md border px-3 bg-white/70 dark:bg-white/5"
+          />
+        </div>
+
+        {/* Closing Odds (+/- allowed) */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="closeOdds" className="text-sm text-slate-600 dark:text-slate-300">Closing Odds (American)</label>
+          <input
+            id="closeOdds"
+            type="text"
+            inputMode="text"               // full keyboard so + / - are available
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            placeholder="+120 or -110 (EV for +100)"
+            value={closingOddsText}
+            onChange={(e) => setClosingOddsText(e.target.value)}
+            className="h-10 rounded-md border px-3 bg-white/70 dark:bg-white/5"
+          />
+        </div>
+
+        {/* Cents per 0.5 */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm text-slate-600 dark:text-slate-300">Cents per Half-Point</label>
+          <input
+            type="range"
+            min={5}
+            max={25}
+            step={1}
+            value={centsPerHalfPoint}
+            onChange={(e) => setCentsPerHalfPoint(parseInt(e.target.value))}
+          />
+          <div className="text-xs text-slate-500">Current: {centsPerHalfPoint}¢ per 0.5</div>
+        </div>
+
+        {/* Rounding (responsive grid for clean stacking) */}
+        <div className="flex flex-col gap-2 md:col-span-3">
+          <label className="text-sm text-slate-600 dark:text-slate-300">Market Rounding</label>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button
+              onClick={() => setRoundMode('exact')}
+              className={`w-full h-10 rounded-md px-3 border bg-white/70 dark:bg-white/5 text-xs sm:text-sm leading-tight whitespace-nowrap ${
+                roundMode === 'exact' ? 'ring-2 ring-cyan-300' : ''
+              }`}
+            >
+              Exact (no-vig)
+            </button>
+            <button
+              onClick={() => setRoundMode('tick5')}
+              className={`w-full h-10 rounded-md px-3 border bg-white/70 dark:bg-white/5 text-xs sm:text-sm leading-tight whitespace-nowrap ${
+                roundMode === 'tick5' ? 'ring-2 ring-cyan-300' : ''
+              }`}
+            >
+              Nearest 5¢
+            </button>
+            <button
+              onClick={() => setRoundMode('tick10')}
+              className={`w-full h-10 rounded-md px-3 border bg-white/70 dark:bg-white/5 text-xs sm:text-sm leading-tight whitespace-nowrap ${
+                roundMode === 'tick10' ? 'ring-2 ring-cyan-300' : ''
+              }`}
+            >
+              Nearest 10¢
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-2xl border p-6 bg-white/80 dark:bg-white/5 flex flex-col gap-4">
+          <Stat label="Half-Points Moved" value={results.hpMoved.toFixed(1)} />
+          <Stat label="Direction (model)" value={results.direction > 0 ? '+ toward plus' : '- toward minus'} />
+          <Stat label="Equivalent Closing Odds @ Original Line (raw)" value={formatOdds(Math.round(results.equivRaw))} helper="Model shift from closing odds" />
+          <Stat label="Equivalent Closing Odds (converted)" value={formatOdds(Math.round(results.equivConverted))} helper="Implied-prob normalized (e.g., -82 → +122)" />
+          <Stat label="Equivalent Closing Odds (market-rounded)" value={formatOdds(Math.round(results.equivMarket))} helper={roundMode === 'exact' ? 'No rounding' : `Rounded to ${roundMode === 'tick5' ? '5' : '10'}¢ tick`} />
+        </div>
+
+        <div className="rounded-2xl border p-6 bg-white/80 dark:bg-white/5 flex flex-col gap-4">
+          <Stat label="Implied Prob — Your Bet" value={Number.isFinite(results.pOrig) ? `${(results.pOrig * 100).toFixed(2)}%` : '–'} />
+          <Stat label="Implied Prob — Equivalent @ Orig Line" value={Number.isFinite(results.pEquiv) ? `${(results.pEquiv * 100).toFixed(2)}%` : '–'} />
+          <Stat label="Edge (Probability Points)" value={Number.isFinite(results.edgeProb) ? `${(results.edgeProb * 100).toFixed(2)} pp` : '–'} helper="Negative = you beat the close" />
+        </div>
+
+        <div className="rounded-2xl border p-6 bg-white/80 dark:bg-white/5 flex flex-col gap-4">
+          <Stat label="Edge (Cents vs Close)" value={`${results.edgeCentsModel > 0 ? '+' : ''}${results.edgeCentsModel.toFixed(1)}¢`} helper="hp moved × cents/0.5 × direction" />
+          <div className="text-sm text-slate-600 dark:text-slate-400">
+            <ul className="list-disc ml-5 mt-1">
+              <li>Totals move in 0.5 increments.</li>
+              <li>Odds accept +120 / -110 / EV; positive odds display with a plus sign.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          className="h-9 rounded-md px-3 border bg-white/70 dark:bg-white/5"
+          onClick={() => {
+            setSide('Under');
+            setOriginalLine(46);
+            setOriginalOddsText('-102');
+            setClosingLine(47);
+            setClosingOddsText('-107');
+            setCentsPerHalfPoint(10);
+            setRoundMode('exact');
+          }}
+        >
+          Load Under Demo
+        </button>
+        <button
+          className="h-9 rounded-md px-3 border bg-white/70 dark:bg-white/5"
+          onClick={() => {
+            setSide('Over');
+            setOriginalLine(46);
+            setOriginalOddsText('-107');
+            setClosingLine(47);
+            setClosingOddsText('-106');
+            setCentsPerHalfPoint(10);
+            setRoundMode('tick5');
+          }}
+        >
+          Load Over Demo
+        </button>
+        <button
+          className="h-9 rounded-md px-3 border bg-white/70 dark:bg-white/5"
+          onClick={() => {
+            setSide('Under');
+            setOriginalLine(43);
+            setOriginalOddsText('-107');
+            setClosingLine(44);
+            setClosingOddsText('-110');
+            setCentsPerHalfPoint(10);
+            setRoundMode('tick5');
+          }}
+        >
+          Load Example #3
+        </button>
+      </div>
+    </div>
+  );
+}
