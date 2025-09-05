@@ -78,10 +78,16 @@ export default function CLVCalculator() {
     </div>
   );
 
-  // Positive CLV if your implied prob is LOWER than fair (you got a better price).
-  // edgeProb = pEquiv - pOrig → beat the close iff edgeProb < 0.
-  const clvIsPositive =
-    Number.isFinite(results.edgeProb) ? results.edgeProb < 0 : results.edgeCentsModel > 0;
+  // ---- CLV indicators ----
+  // Line-based signal: positive if the total moved in your favor (cents model).
+  const isPositiveLine = results.edgeCentsModel > 0;
+
+  // Price-based signal: your implied prob vs fair at your line (negative = you beat the close).
+  // edgeProb = pEquiv - pOrig → edgeProb < 0 means your price is better than fair.
+  const isPositivePrice = Number.isFinite(results.edgeProb) ? results.edgeProb < 0 : false;
+
+  // Badge uses LINE-MOVE (as requested).
+  const clvIsPositive = isPositiveLine;
 
   return (
     <div className="space-y-6">
@@ -96,6 +102,10 @@ export default function CLVCalculator() {
             Fair @ your line: <span className="font-medium">
               {formatOdds(Math.round(results.equivMarket))}
             </span>
+            {' · '}
+            <span className={`ml-2 ${isPositivePrice ? 'text-emerald-500' : 'text-fuchsia-400'}`}>
+              {isPositivePrice ? 'Better price than fair' : 'Worse price than fair'}
+            </span>
           </div>
         </div>
         <span
@@ -105,7 +115,7 @@ export default function CLVCalculator() {
               : 'bg-fuchsia-500/15 text-fuchsia-300'
           }`}
         >
-          {clvIsPositive ? 'You beat the close' : 'Worse than close'}
+          {clvIsPositive ? 'Line moved in your favor' : 'Line moved against you'}
         </span>
       </div>
 
@@ -244,7 +254,7 @@ export default function CLVCalculator() {
         <div className="rounded-2xl border p-6 bg-white/80 dark:bg-white/5 flex flex-col gap-4">
           <Stat label="Implied Prob — Your Bet" value={Number.isFinite(results.pOrig) ? `${(results.pOrig * 100).toFixed(2)}%` : '–'} />
           <Stat label="Implied Prob — Equivalent @ Orig Line" value={Number.isFinite(results.pEquiv) ? `${(results.pEquiv * 100).toFixed(2)}%` : '–'} />
-          <Stat label="Edge (Probability Points)" value={Number.isFinite(results.edgeProb) ? `${(results.edgeProb * 100).toFixed(2)} pp` : '–'} helper="Negative = you beat the close" />
+          <Stat label="Edge (Probability Points)" value={Number.isFinite(results.edgeProb) ? `${(results.edgeProb * 100).toFixed(2)}%` : '–'} helper="Negative = you beat the close" />
         </div>
 
         <div className="rounded-2xl border p-6 bg-white/80 dark:bg-white/5 flex flex-col gap-4">
