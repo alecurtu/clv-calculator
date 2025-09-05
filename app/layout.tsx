@@ -5,7 +5,8 @@ import ScoreTicker from '@/components/ScoreTicker';
 
 export const metadata: Metadata = {
   title: 'NFL CLV Calculator',
-  description: 'Compute Closing Line Value for NFL totals with exact conversions and market-style rounding.',
+  description:
+    'Compute Closing Line Value for NFL totals with exact conversions and market-style rounding.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
