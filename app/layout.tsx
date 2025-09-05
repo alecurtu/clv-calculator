@@ -1,3 +1,4 @@
+import './globals.css';  // 👈 required for Tailwind + global styles
 import BannerBar from '@/components/BannerBar';
 import ScoreTicker from '@/components/ScoreTicker';
 
