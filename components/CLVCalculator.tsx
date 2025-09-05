@@ -79,15 +79,12 @@ export default function CLVCalculator() {
   );
 
   // ---- CLV indicators ----
-  // Line-based signal: positive if the total moved in your favor (cents model).
   const isPositiveLine = results.edgeCentsModel > 0;
-
-  // Price-based signal: your implied prob vs fair at your line (negative = you beat the close).
   // edgeProb = pEquiv - pOrig → edgeProb < 0 means your price is better than fair.
   const isPositivePrice = Number.isFinite(results.edgeProb) ? results.edgeProb < 0 : false;
 
-  // Badge uses PRICE-BASED CLV (flip to this).
-  const clvIsPositive = isPositivePrice;
+  // ⬇️ Swap the badge: invert the previous price-based flag
+  const clvIsPositive = !isPositivePrice;
 
   return (
     <div className="space-y-6">
