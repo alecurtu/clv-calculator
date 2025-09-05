@@ -2,11 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { --bg: #ffffff; }
+/* Color tokens */
+:root {
+  --bg: #ffffff;
+  --fg: #0b1220;
+  --card: rgba(255,255,255,0.85);
+  --muted: #475569;
+  --ring: #22d3ee; /* neon cyan */
+}
+.dark {
+  --bg: #060912;
+  --fg: #e5e7eb;
+  --card: rgba(8,12,24,0.7);
+  --muted: #94a3b8;
+  --ring: #22d3ee;
+}
+
 html, body, #__next { height: 100%; }
-body { background: var(--bg); }
+body {
+  background: radial-gradient(1200px 600px at 70% -10%, rgba(34,211,238,0.15), transparent 60%),
+              radial-gradient(1000px 500px at -10% 0%, rgba(232,121,249,0.12), transparent 60%),
+              var(--bg);
+  color: var(--fg);
+}
+
+/* Glass + neon helpers */
+.glass {
+  background: var(--card);
+  backdrop-filter: blur(10px);
+}
+.neon-border {
+  box-shadow: 0 0 0 1px rgba(34,211,238,0.35), 0 0 25px rgba(34,211,238,0.25);
+}
+
+/* Inputs */
+input, select, button {
+  outline: none;
+}
+input:focus, select:focus {
+  box-shadow: 0 0 0 3px rgba(34,211,238,0.35);
+  border-color: rgba(34,211,238,0.6);
+}
 
 /* Score ticker animation */
-.ticker-track { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
+.ticker-track { display: inline-block; white-space: nowrap; animation: ticker 28s linear infinite; }
 .ticker:hover .ticker-track { animation-play-state: paused; }
 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
