@@ -1,26 +1,21 @@
-# NFL CLV Calculator (Next.js 14)
+# NFL CLV Calculator — Neon UI + Dark/Light Mode
 
-Production-ready app with Tailwind, live NFL score ticker (ESPN), and a CLV calculator for totals.
+Next.js 14 app with Tailwind, a neon-themed UI, dark/light mode toggle, live NFL score ticker (ESPN), and a CLV calculator for totals.
 
-## Quickstart
+## Run locally
 ```bash
 npm ci
 cp .env.example .env.local
 npm run dev
-# open http://localhost:3000
+# http://localhost:3000
 ```
 
-## Build
+## Production build
 ```bash
 npm run build && npm start
 ```
 
-## Deploy (Vercel)
-- Uses `next.config.mjs` and `postcss.config.js` (no TS configs).
-- Ensure Node 18 or 20 in the project settings.
-- Add env vars or keep defaults from `.env.example`.
-```ini
-SCORES_SOURCE=espn
-ESPN_SCOREBOARD_BASE=https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard
-SCORES_REVALIDATE=30
-```
+## Notes
+- Dark mode is class-based (`darkMode: 'class'`); a toggle stores preference in `localStorage`.
+- Styles use glass + neon glow (see `app/globals.css`).
+- Score ticker background is a neon gradient.
