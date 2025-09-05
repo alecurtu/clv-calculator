@@ -83,8 +83,14 @@ export default function CLVCalculator() {
   // edgeProb = pEquiv - pOrig → edgeProb < 0 means your price is better than fair.
   const isPositivePrice = Number.isFinite(results.edgeProb) ? results.edgeProb < 0 : false;
 
-  // ⬇️ Swap the badge: invert the previous price-based flag
+  // Badge currently inverted per your request (swap the tags):
   const clvIsPositive = !isPositivePrice;
+
+  // New: CLV as a percentage (probability points). Positive = you beat the close.
+  const clvPctProb =
+    Number.isFinite(results.pOrig) && Number.isFinite(results.pEquiv)
+      ? (results.pOrig - results.pEquiv) * 100 // invert so beating the close is positive
+      : NaN;
 
   return (
     <div className="space-y-6">
@@ -256,6 +262,15 @@ export default function CLVCalculator() {
           <Stat label="Implied Prob — Your Bet" value={Number.isFinite(results.pOrig) ? `${(results.pOrig * 100).toFixed(2)}%` : '–'} />
           <Stat label="Implied Prob — Equivalent @ Orig Line" value={Number.isFinite(results.pEquiv) ? `${(results.pEquiv * 100).toFixed(2)}%` : '–'} />
           <Stat label="Edge (Probability Points)" value={Number.isFinite(results.edgeProb) ? `${(results.edgeProb * 100).toFixed(2)} pp` : '–'} helper="Negative = you beat the close" />
+          <Stat
+            label="CLV (Probability %)"
+            value={
+              Number.isFinite(clvPctProb)
+                ? `${clvPctProb > 0 ? '+' : ''}${clvPctProb.toFixed(2)}%`
+                : '–'
+            }
+            helper="Positive = you beat the close (probability)"
+          />
         </div>
 
         <div className="rounded-2xl border p-6 bg-white/80 dark:bg-white/5 flex flex-col gap-4">
