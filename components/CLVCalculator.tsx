@@ -78,7 +78,11 @@ export default function CLVCalculator() {
     </div>
   );
 
-  const clvIsPositive = results.edgeCentsModel > 0;
+  // Positive CLV if your implied prob is LOWER than fair (you got a better price)
+// edgeProb = pEquiv - pOrig, so beating the close means edgeProb < 0
+const clvIsPositive =
+  Number.isFinite(results.edgeProb) ? results.edgeProb < 0 : results.edgeCentsModel > 0;
+
 
   return (
     <div className="space-y-6">
