@@ -1,9 +1,13 @@
-export type BannerCreative = { lg?: string; md?: string; sm?: string; };
-export type Banner = { id: string; href: string; alt?: string; creative: BannerCreative; };
-export const BANNERS: Banner[] = [{
-  id: 'b1', href: 'https://example.com/ad1', alt: 'Ad 1', creative: {
-    lg: '/banners/sample-970x90-1.png', md: '/banners/sample-728x90-1.png', sm: '/banners/sample-320x50-1.png'
-  }},{
-  id: 'b2', href: 'https://example.com/ad2', alt: 'Ad 2', creative: {
-    lg: '/banners/sample-970x90-2.png', md: '/banners/sample-728x90-2.png', sm: '/banners/sample-320x50-2.png'
-  }}];
+export const BANNERS: Banner[] = [
+  {
+    id: 'pickem',
+    href: 'https://pickemgame.app',
+    alt: 'NFL Pick’em – Free Weekly Contest',
+    creative: {
+      lg: '/banners/pickem-970x90.png', // 970×90
+      md: '/banners/pickem-728x90.png', // 728×90
+      sm: '/banners/pickem-320x50.png'  // 320×50
+    }
+  }
+  // ...keep any other banners after this
+];
